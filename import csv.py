@@ -18,14 +18,17 @@ def scrape_zillow_rentals(zip_code):
         title = rental.find("a", class_="list-card-link")["aria-label"]
         price = rental.find("div", class_="list-card-price").text
         address = rental.find("address", class_="list-card-addr").text
-        data.append([title, price, address])
+        bedrooms = rental.find("ul", class_="list-card-details").find_all("li")[0].text.split()[0]
+        baths = rental.find("ul", class_="list-card-details").find_all("li")[1].text.split()[0]
+        sqft = rental.find("ul", class_="list-card-details").find_all("li")[2].text.split()[0]
+        data.append([title, price, address, bedrooms, baths, sqft])
 
     return data
 
 def save_to_csv(data):
     with open("rental_listings.csv", "w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        writer.writerow(["Title", "Price", "Address"])  # Write header
+        writer.writerow(["Title", "Price", "Address", "Bedrooms", "Baths", "Sqft"])  # Write header
         writer.writerows(data)  # Write data rows
 
 def main():
